@@ -1,0 +1,13 @@
+spring:
+  #DB??
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/polycube/poly
+    username: pc
+    password: 2024
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
