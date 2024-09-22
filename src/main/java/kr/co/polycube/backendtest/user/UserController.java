@@ -1,5 +1,6 @@
 package kr.co.polycube.backendtest.user;
 
+import jakarta.validation.Valid;
 import kr.co.polycube.backendtest.user.dto.SignUpReqDTO;
 import kr.co.polycube.backendtest.user.dto.SignUpResDTO;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SignUpResDTO createUser(@ModelAttribute SignUpReqDTO user) {
+    public SignUpResDTO createUser(@ModelAttribute @Valid SignUpReqDTO user) {
         return userSvc.signUp(user);
     }
 }
