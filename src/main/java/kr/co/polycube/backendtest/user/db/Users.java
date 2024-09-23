@@ -1,6 +1,7 @@
 package kr.co.polycube.backendtest.user.db;
 
 import jakarta.persistence.*;
+import kr.co.polycube.backendtest.user.dto.PatchUserReqDTO;
 import kr.co.polycube.backendtest.user.dto.SignUpReqDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,5 +20,9 @@ public class Users {
         Users users = new Users();
         users.name = dto.getName();
         return users;
+    }
+
+    public void update(PatchUserReqDTO u) {
+        name = u.getName();
     }
 }
