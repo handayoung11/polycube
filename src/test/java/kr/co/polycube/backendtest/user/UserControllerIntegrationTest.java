@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.polycube.backendtest.user.db.UserRepo;
 import kr.co.polycube.backendtest.user.db.Users;
 import kr.co.polycube.backendtest.user.dto.GetUserResDTO;
+import kr.co.polycube.backendtest.user.dto.PatchUserResDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,8 +33,7 @@ public class UserControllerIntegrationTest {
     @Autowired
     private UserRepo userRepo;
 
-    @Test
-    public void createUser() {
+    private ResponseEntity<String> createUserReq() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/x-www-form-urlencoded");
 
@@ -42,9 +42,10 @@ public class UserControllerIntegrationTest {
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity("/users", entity, String.class);
+        return response;
+    }
 
-        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-
+    private Long getId(ResponseEntity<String> response) {
         Long id = null;
         try {
             JsonNode node = objectMapper.readTree(response.getBody());
@@ -52,14 +53,26 @@ public class UserControllerIntegrationTest {
         } catch (Exception e) {
             fail();
         }
+        return id;
+    }
 
-
+    private void deleteUser(Long id) {
         try {
             userRepo.deleteById(id);
         } catch (Exception e) {
             System.err.println("user 삭제 실패");
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void createUser() {
+        ResponseEntity<String> response = createUserReq();
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+
+        Long id = getId(response);
+
+        deleteUser(id);
     }
 
     @Test
@@ -77,5 +90,24 @@ public class UserControllerIntegrationTest {
 
         assertEquals(user.getId(), res.getId());
         assertEquals(user.getName(), res.getName());
+    }
+
+    @Test
+    public void updateUser() {
+        ResponseEntity<String> response = createUserReq();
+        Long id = getId(response);
+        String name = "changed_name";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/x-www-form-urlencoded");
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("name", name);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
+
+        PatchUserResDTO dto = restTemplate.patchForObject("/users/" + id, entity, PatchUserResDTO.class);
+        assertEquals(dto.getId(), id);
+        assertEquals(dto.getName(), name);
+
+        deleteUser(id);
     }
 }
