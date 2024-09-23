@@ -20,8 +20,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerIntegrationTest {
@@ -109,5 +108,12 @@ public class UserControllerIntegrationTest {
         assertEquals(dto.getName(), name);
 
         deleteUser(id);
+    }
+
+    @Test
+    public void urlValidatorFilterTest() {
+        ResponseEntity<String> entity = restTemplate.getForEntity("/users/1?name=test!!", String.class);
+        assertEquals(entity.getStatusCode(), HttpStatus.BAD_REQUEST);
+        assertNotNull(entity.getBody());
     }
 }
