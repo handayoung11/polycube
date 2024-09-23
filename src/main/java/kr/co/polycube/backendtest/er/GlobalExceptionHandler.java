@@ -1,7 +1,5 @@
 package kr.co.polycube.backendtest.er;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,10 +47,4 @@ public class GlobalExceptionHandler {
                 new ErrorRes("parameter 명이나 type, value, 개수가 올바른지 확인해주세요")
                 , HttpStatus.BAD_REQUEST);
     }
-}
-
-@Getter
-@AllArgsConstructor
-class ErrorRes {
-    private String reason;
 }
