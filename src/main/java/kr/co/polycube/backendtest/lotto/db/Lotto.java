@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Random;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,4 +26,16 @@ public class Lotto {
     private int number5;
     @Column(name = "number_6", nullable = false)
     private int number6;
+
+    public static Lotto createLotto() {
+        Random random = new Random();
+        Lotto lotto = new Lotto();
+        lotto.number1 = random.nextInt(100);
+        lotto.number2 = random.nextInt(100);
+        lotto.number3 = random.nextInt(100);
+        lotto.number4 = random.nextInt(100);
+        lotto.number5 = random.nextInt(100);
+        lotto.number6 = random.nextInt(100);
+        return lotto;
+    }
 }
